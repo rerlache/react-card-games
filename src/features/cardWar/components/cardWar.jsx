@@ -1,4 +1,4 @@
-import Deck from "../../../components/global/deck";
+import Deck from "../../../components/deck";
 
 const CARD_VALUE_MAP = {
   2: 2,
@@ -16,11 +16,11 @@ const CARD_VALUE_MAP = {
   A: 14,
 };
 
-const computerDeckElement = document.querySelector(".computer-deck");
-const playerDeckElement = document.querySelector(".player-deck");
-const computerCardSlotElement = document.querySelector(".computer-card-slot");
-const playerCardSlotElement = document.querySelector(".player-card-slot");
-const text = document.querySelector(".text");
+const computerDeckElement = document.querySelector(".CWcomputer-deck");
+const playerDeckElement = document.querySelector(".CWplayer-deck");
+const computerCardSlotElement = document.querySelector(".CWcomputer-card-slot");
+const playerCardSlotElement = document.querySelector(".CWplayer-card-slot");
+const text = document.querySelector(".CWtext");
 
 let playerDeck, computerDeck, inRound, stop;
 

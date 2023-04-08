@@ -8,10 +8,9 @@
   cursor: pointer;
   justify-content: center;
   padding-top: 1rem;
-  user-select: none;
 }
 
-.deck {
+.CWdeck {
   position: relative;
   height: 100%;
   width: 100%;
@@ -23,7 +22,7 @@
   border-radius: 0.5rem;
   color: white;
 }
-.deck::before {
+.CWdeck::before {
   position: absolute;
   content: attr(data-value);
   font-size: 1rem;
@@ -31,16 +30,16 @@
   left: 0.5rem;
 }
 
-.computer-deck {
-  background-color: green;
+.CWcomputer-deck {
+  background-color: red;
 }
 
-.player-deck {
+.CWplayer-deck {
   background-color: blue;
 }
 
-.text,
-.header {
+.CWtext,
+.CWheader {
   grid-column: span 2;
   display: flex;
   justify-content: center;

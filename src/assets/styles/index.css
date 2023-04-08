@@ -2,4 +2,12 @@
 *::after,
 *::before {
   box-sizing: border-box;
+  user-select: none;
+}
+
+.red {
+  color: red;
+}
+.black {
+  color: black;
 }

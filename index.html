@@ -5,17 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>React Card Games</title>
     <link rel="stylesheet" href="./src/features/cardWar/styles/style.css" />
+    <link rel="stylesheet" href="./src/features/blackJack/styles/style.css" />
     <script type="module" src="/src/features/cardWar/components/cardWar.jsx" defer></script>
   </head>
   <body>
     <div id="cardWar">
-      <div class="header">Card-War</div>
-      <div class="computer-deck deck" data-value="CPU"></div>
-      <div class="computer-card-slot card-slot"></div>
-      <div class="text"></div>
-      <div class="player-deck deck" data-value="Player"></div>
-      <div class="player-card-slot card-slot"></div>
+      <div class="CWheader">Card-War</div>
+      <div class="CWcomputer-deck CWdeck" data-value="CPU"></div>
+      <div class="CWcomputer-card-slot CWcard-slot"></div>
+      <div class="CWtext"></div>
+      <div class="CWplayer-deck CWdeck" data-value="Player"></div>
+      <div class="CWplayer-card-slot CWcard-slot"></div>
     </div>
+    <hr />
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
