@@ -9,14 +9,14 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-.BJtext,
-.BJheader {
+.text,
+.header {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.BJhandContainer {
+.handContainer {
   color: black;
   display: grid;
   align-items: center;
@@ -34,18 +34,18 @@
   background-color: blue;
 }
 
-.BJcardContainer {
+.cardContainer {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
 }
 
-.BJtitle {
+.title {
   text-align: center;
   color: white;
 }
 
-.BJcard {
+.card {
   background-color: whitesmoke;
   position: relative;
   height: 7rem;
@@ -58,24 +58,24 @@
   font-size: 4rem;
   margin: .25rem
 }
-.BJcard::after,
-.BJcard::before {
+.card::after,
+.card::before {
   position: absolute;
   content: attr(data-value);
   font-size: 1rem;
 }
-.BJcard::before {
+.card::before {
   top: 0.5rem;
   left: 0.5rem;
 }
 
-.BJcard::after {
+.card::after {
   bottom: 0.5rem;
   right: 0.5rem;
   transform: rotate(180deg);
 }
 
-.BJhiddenCard {
+.hiddenCard {
   width: 110px;
   height: 250px;
   margin: 10px;

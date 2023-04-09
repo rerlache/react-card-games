@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Deck from "../../../components/deck";
 import Hand from "./hand";
+import '../styles/style.css'
 
 const GAMESTATE = {
   bet: "bet",
@@ -172,11 +173,15 @@ const BlackJack = () => {
     });
     setScore(total);
   };
+  // TODO: implement buttons
   return (
     <>
       <div className="header">BlackJack</div>
       <Hand title={`Dealers Hand (${dealerScore})`} cards={dealerCards} player='dealer' />
       <Hand title={`Your Hand (${playerScore})`} cards={playerCards} player='player' />
+      <button>Get Card</button>
+      <button>Stay</button>
+      <button>Again</button>
     </>
   );
 };

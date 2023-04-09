@@ -1,4 +1,5 @@
 import Deck from "../../../components/deck";
+import '../styles/style.css'
 
 const CARD_VALUE_MAP = {
   2: 2,

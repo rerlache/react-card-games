@@ -11,10 +11,10 @@ const Card = ({ value, suit, hidden }) => {
 
   const getCard = () => {
     if (hidden) {
-      return <div className="BJhiddenCard" />;
+      return <div className="hiddenCard" />;
     } else {
       return (
-        <div className={`BJcard ${getColor()}`} data-value={`${value} ${suit}`}>
+        <div className={`card ${getColor()}`} data-value={`${value} ${suit}`}>
           {suit}
         </div>
       );

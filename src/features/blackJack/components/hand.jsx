@@ -4,13 +4,13 @@ import Card from "./card";
 const Hand = ({ title, cards, player }) => {
   const getTitle = () => {
     if (cards.length > 0) {
-      return <h1 className="BJtitle">{title}</h1>;
+      return <h1 className="title">{title}</h1>;
     }
   };
   return (
-    <div className={`BJhandContainer ${player}`}>
+    <div className={`handContainer ${player}`}>
       {getTitle()}
-      <div className="BJcardContainer">
+      <div className="cardContainer">
         {cards.map((card, index) => {
           return (
             <Card
