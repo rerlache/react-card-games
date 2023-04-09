@@ -1,5 +1,8 @@
+import { useEffect, useState } from "react";
 import Deck from "../../../components/deck";
-import '../styles/style.css'
+import style from "../styles/cardWar.module.css";
+import CardWarDeck from "./cardWarDeck";
+import CardWarCard from "./cardWarCard";
 
 const CARD_VALUE_MAP = {
   2: 2,
@@ -17,93 +20,151 @@ const CARD_VALUE_MAP = {
   A: 14,
 };
 
-const computerDeckElement = document.querySelector(".CWcomputer-deck");
-const playerDeckElement = document.querySelector(".CWplayer-deck");
-const computerCardSlotElement = document.querySelector(".CWcomputer-card-slot");
-const playerCardSlotElement = document.querySelector(".CWplayer-card-slot");
-const text = document.querySelector(".CWtext");
+let stop, roundWinner;
 
-let playerDeck, computerDeck, inRound, stop;
-
-document.addEventListener("click", () => {
-  if (stop) {
-    startGame();
-    return;
-  }
-
-  if (inRound) {
-    cleanBeforeRound();
-  } else {
-    flipCards();
-  }
-});
-
-startGame();
-function startGame() {
+function CardWar() {
   const deck = new Deck();
   deck.shuffle();
+  const deckMidPoint = Math.ceil(deck.numberOfCards / 2);
+  const playerCardsInit = new Deck(deck.cards.slice(0, deckMidPoint));
+  const cpuCardsInit = new Deck(
+    deck.cards.slice(deckMidPoint, deck.numberOfCards)
+  );
+  const [isLoading, setIsLoading] = useState(true);
+  const [inRound, setInRound] = useState(false);
+  const [message, setMessage] = useState("");
+  const [playerDeck, setPlayerDeck] = useState(playerCardsInit.cards);
+  const [playerCard, setPlayerCard] = useState();
+  const [cpuDeck, setCpuDeck] = useState(cpuCardsInit.cards);
+  const [cpuCard, setCpuCard] = useState();
 
-  const deckMidpoint = Math.ceil(deck.numberOfCards / 2);
-  playerDeck = new Deck(deck.cards.slice(0, deckMidpoint));
-  computerDeck = new Deck(deck.cards.slice(deckMidpoint, deck.numberOfCards));
-  inRound = false;
   stop = false;
 
-  cleanBeforeRound();
-}
+  useEffect(() => {
+    if (isLoading) {
+      setTimeout(() => {
+        setIsLoading(false);
+        return;
+      }, 3000);
+    }
+  }, []);
 
-function cleanBeforeRound() {
-  inRound = false;
-  computerCardSlotElement.innerHTML = "";
-  playerCardSlotElement.innerHTML = "";
-  text.innerText = "";
+  useEffect(() => {
+    if (inRound) {
+      winLogic();
+    }
+    return;
+  }, [inRound]);
 
-  updateDeckCount();
-}
-
-function flipCards() {
-  inRound = true;
-
-  const playerCard = playerDeck.pop();
-  const computerCard = computerDeck.pop();
-
-  playerCardSlotElement.appendChild(playerCard.getHTML());
-  computerCardSlotElement.appendChild(computerCard.getHTML());
-
-  updateDeckCount();
-
-  if (isRoundWinner(playerCard, computerCard)) {
-    text.innerText = "Win";
-    playerDeck.push(playerCard);
-    playerDeck.push(computerCard);
-  } else if (isRoundWinner(computerCard, playerCard)) {
-    text.innerText = "Lose";
-    computerDeck.push(computerCard);
-    computerDeck.push(playerCard);
-  } else {
-    text.innerText = "Draw";
-    playerDeck.push(playerCard);
-    computerDeck.push(computerCard);
+  function updateDecks(winner) {
+    if (winner === "player") {
+      setPlayerDeck((currentPlayerDeck) => {
+        const tempArr = [...currentPlayerDeck];
+        tempArr.push(playerCard);
+        return tempArr;
+      });
+      setPlayerDeck((currentPlayerDeck) => {
+        const tempArr = [...currentPlayerDeck];
+        tempArr.push(cpuCard);
+        return tempArr;
+      });
+    } else if (winner === "cpu") {
+      setCpuDeck((currentCpuDeck) => {
+        const tempArr = [...currentCpuDeck];
+        tempArr.push(cpuCard);
+        return tempArr;
+      });
+      setCpuDeck((currentCpuDeck) => {
+        const tempArr = [...currentCpuDeck];
+        tempArr.push(playerCard);
+        return tempArr;
+      });
+    } else {
+      setPlayerDeck((currentPlayerDeck) => {
+        const tempArr = [...currentPlayerDeck];
+        tempArr.push(playerCard);
+        return tempArr;
+      });
+      setCpuDeck((currentCpuDeck) => {
+        const tempArr = [...currentCpuDeck];
+        tempArr.push(cpuCard);
+        return tempArr;
+      });
+    }
   }
 
-  if (isGameOver(playerDeck)) {
-    text.innerText = "You Lose!!";
-    stop = true;
-  } else if (isGameOver(computerDeck)) {
-    text.innerText = "You Won!!";
-    stop = true;
+  function winLogic() {
+    if (checkWinner(playerCard.value, cpuCard.value)) {
+      setMessage("Win");
+      roundWinner = "player";
+    } else if (checkWinner(cpuCard.value, playerCard.value)) {
+      setMessage("Lose");
+      roundWinner = "cpu";
+    } else {
+      setMessage("Draw");
+      roundWinner = "no one";
+    }
   }
+
+  function handleCardFlip(e) {
+    if (inRound) {
+      setInRound(false);
+
+      setPlayerCard();
+      setCpuCard();
+      setMessage("");
+      updateDecks(roundWinner);
+    } else {
+      setInRound(true);
+
+      setPlayerCard(playerDeck[0]);
+      setCpuCard(cpuDeck[0]);
+      setPlayerDeck((currentPlayerDeck) => {
+        let tempArr = [...currentPlayerDeck];
+        return tempArr.slice(1);
+      });
+      setCpuDeck((currentCpuDeck) => {
+        let tempArr = [...currentCpuDeck];
+        return tempArr.slice(1);
+      });
+    }
+
+    if (isGameOver(playerDeck)) {
+      setMessage("You Lose!!<br />Refresh Page to play again");
+      stop = true;
+    } else if (isGameOver(cpuDeck)) {
+      setMessage("You Won!!<br />Refresh Page to play again");
+      stop = true;
+    }
+  }
+
+  function isGameOver(deck) {
+    return deck.numberOfCards === 0;
+  }
+
+  function checkWinner(cardOne, cardTwo) {
+    return CARD_VALUE_MAP[cardOne] > CARD_VALUE_MAP[cardTwo];
+  }
+
+  return (
+    <div id={style.cardWar}>
+      {isLoading ? (
+        <div className={style.header}>Preparing game...</div>
+      ) : (
+        <>
+          <div className={style.header}>Card-War</div>
+          <CardWarDeck player="CPU" deck={cpuDeck} />
+          <CardWarCard player="CPU" card={cpuCard} />
+          <div className={style.text}>{message}</div>
+          <CardWarDeck player="Player" deck={playerDeck} />
+          <CardWarCard player="Player" card={playerCard} />
+          <button className={style.btn} onClick={() => handleCardFlip()}>
+            {inRound ? "Next Round" : "Flip Cards"}
+          </button>
+        </>
+      )}
+    </div>
+  );
 }
 
-function updateDeckCount() {
-  computerDeckElement.innerText = computerDeck.numberOfCards;
-  playerDeckElement.innerText = playerDeck.numberOfCards;
-}
-
-function isRoundWinner(cardOne, cardTwo) {
-  return CARD_VALUE_MAP[cardOne.value] > CARD_VALUE_MAP[cardTwo.value];
-}
-
-function isGameOver(deck) {
-  return deck.numberOfCards === 0;
-}
+export default CardWar;
