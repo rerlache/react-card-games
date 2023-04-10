@@ -98,7 +98,7 @@ const BlackJack = () => {
     } else if (playerScore === dealerScore) {
       setMessage(MESSAGE.tie);
     }
-    setGameState(GAMESTATE.done)
+    setGameState(GAMESTATE.done);
     setButtonState({
       hitDisabled: true,
       resetDisabled: false,
@@ -108,8 +108,8 @@ const BlackJack = () => {
 
   const resetGame = () => {
     console.clear();
-    data = new Deck()
-    data.shuffle()
+    data = new Deck();
+    data.shuffle();
     setDeck(data.cards);
 
     setPlayerCards([]);
@@ -119,7 +119,7 @@ const BlackJack = () => {
     setDealerCards([]);
     setDealerScore(0);
     setDealerCount(0);
-    setHiddenDealerCard(true)
+    setHiddenDealerCard(true);
 
     setGameState(GAMESTATE.init);
     setMessage(MESSAGE.bet);
@@ -132,10 +132,10 @@ const BlackJack = () => {
 
   const drawCard = (dealType) => {
     if (deck.length > 0) {
-      const index = deck.length - 1
-      console.log(index)
-      console.log(deck)
-      const card = deck.pop()
+      const index = deck.length - 1;
+      console.log(index);
+      console.log(deck);
+      const card = deck.pop();
       //setDeck((prevDeck) => {
       //  let tempDeck = [...prevDeck]
       //  return tempDeck.pop()
@@ -246,41 +246,58 @@ const BlackJack = () => {
   return (
     <>
       {gameState === undefined ? (
-        <button onClick={() => startGame()}>Start Game</button>
+        <div className={style.btncontainer}>
+          <button className={style.btn} onClick={() => startGame()}>
+            Start Game
+          </button>
+        </div>
       ) : (
-        <>
+        <div id={style.blackJack}>
           <div className={style.header}>BlackJack</div>
           <Hand
-            title={gameState === GAMESTATE.done ? `Dealers Hand (${dealerScore})` : "Dealers Hand"}
+            title={
+              gameState === GAMESTATE.done
+                ? `Dealers Hand (${dealerScore})`
+                : "Dealers Hand"
+            }
             cards={dealerCards}
             player="dealer"
             hidden={hiddenDealerCard}
           />
           <Hand
-            title={gameState === GAMESTATE.done ? `Your Hand (${playerScore})` : "Your Hand"}
+            title={
+              gameState === GAMESTATE.done
+                ? `Your Hand (${playerScore})`
+                : "Your Hand"
+            }
             cards={playerCards}
             player="player"
           />
-          <div>{message}</div>
-          <button
-            onClick={() => handleGetPlayerCard()}
-            disabled={buttonState.hitDisabled}
-          >
-            Get Card
-          </button>
-          <button
-            onClick={() => handleStay()}
-            disabled={buttonState.standDisabled}
-          >
-            Stay
-          </button>
-          <button
-            onClick={() => resetGame()}
-            disabled={buttonState.resetDisabled}
-          >
-            Again
-          </button>
-        </>
+          <div className={style.text}>{message}</div>
+          <div className={style.btncontainer}>
+            <button
+              className={`btn ${style.playbtn}`}
+              onClick={() => handleGetPlayerCard()}
+              disabled={buttonState.hitDisabled}
+            >
+              Get Card
+            </button>
+            <button
+              className={`btn ${style.playbtn}`}
+              onClick={() => handleStay()}
+              disabled={buttonState.standDisabled}
+            >
+              Stay
+            </button>
+            <button
+              className={`btn ${style.playbtn}`}
+              onClick={() => resetGame()}
+              disabled={buttonState.resetDisabled}
+            >
+              Again
+            </button>
+          </div>
+        </div>
       )}
     </>
   );

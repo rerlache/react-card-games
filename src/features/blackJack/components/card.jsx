@@ -1,5 +1,5 @@
 import React from "react";
-import style from '../styles/blackJack.module.css'
+import style from "../styles/blackJack.module.css";
 
 const Card = ({ index, value, suit, hidden, player }) => {
   const getColor = () => {
@@ -14,7 +14,10 @@ const Card = ({ index, value, suit, hidden, player }) => {
       return <div className={style.hiddenCard} />;
     } else {
       return (
-        <div className={(`${style.card} ${getColor()}`)} data-value={`${value} ${suit}`}>
+        <div
+          className={`${style.card} ${getColor()}`}
+          data-value={`${value} ${suit}`}
+        >
           {suit}
         </div>
       );
