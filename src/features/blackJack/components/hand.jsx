@@ -2,7 +2,7 @@ import React from "react";
 import Card from "./card";
 import style from "../styles/blackJack.module.css";
 
-const Hand = ({ title, cards, player }) => {
+const Hand = ({ title, cards, player, hidden }) => {
   const getTitle = () => {
     if (cards.length > 0) {
       return <h1 className={style.title}>{title}</h1>;
@@ -23,6 +23,7 @@ const Hand = ({ title, cards, player }) => {
               index={index}
               value={card.value}
               suit={card.suit}
+              hidden={index === 0 ? hidden : false}
               player={player}
             />
           );

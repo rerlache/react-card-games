@@ -8,6 +8,7 @@ const GAMESTATE = {
   init: "init",
   playerTurn: "playerTurn",
   dealerTurn: "dealerTurn",
+  done: "done",
 };
 const DEAL = {
   player: "player",
@@ -24,7 +25,7 @@ const MESSAGE = {
 const BlackJack = () => {
   let data = new Deck();
   data.shuffle();
-  const [deck, setDeck] = useState(new Deck().shuffle());
+  const [deck, setDeck] = useState(data.cards);
   // player States
   const [playerCards, setPlayerCards] = useState([]);
   const [playerScore, setPlayerScore] = useState(0);
@@ -33,6 +34,7 @@ const BlackJack = () => {
   const [dealerCards, setDealerCards] = useState([]);
   const [dealerScore, setDealerScore] = useState();
   const [dealerCount, setDealerCount] = useState(0);
+  const [hiddenDealerCard, setHiddenDealerCard] = useState(true);
   // game States
   const [gameState, setGameState] = useState();
   const [message, setMessage] = useState(MESSAGE.bet);
@@ -96,6 +98,7 @@ const BlackJack = () => {
     } else if (playerScore === dealerScore) {
       setMessage(MESSAGE.tie);
     }
+    setGameState(GAMESTATE.done)
     setButtonState({
       hitDisabled: true,
       resetDisabled: false,
@@ -105,7 +108,9 @@ const BlackJack = () => {
 
   const resetGame = () => {
     console.clear();
-    setDeck(data);
+    data = new Deck()
+    data.shuffle()
+    setDeck(data.cards);
 
     setPlayerCards([]);
     setPlayerScore(0);
@@ -114,6 +119,7 @@ const BlackJack = () => {
     setDealerCards([]);
     setDealerScore(0);
     setDealerCount(0);
+    setHiddenDealerCard(true)
 
     setGameState(GAMESTATE.init);
     setMessage(MESSAGE.bet);
@@ -125,10 +131,16 @@ const BlackJack = () => {
   };
 
   const drawCard = (dealType) => {
-    if (data.numberOfCards > 0) {
-      console.log(data.numberOfCards);
-      const card = data.pop();
-      console.log("remaining cards: ", data.numberOfCards);
+    if (deck.length > 0) {
+      const index = deck.length - 1
+      console.log(index)
+      console.log(deck)
+      const card = deck.pop()
+      //setDeck((prevDeck) => {
+      //  let tempDeck = [...prevDeck]
+      //  return tempDeck.pop()
+      //})
+      console.log("remaining cards: ", deck.length);
       dealCard(dealType, card);
     } else {
       alert("All cards have been drawn!");
@@ -207,6 +219,7 @@ const BlackJack = () => {
   function handleStay() {
     setGameState(GAMESTATE.dealerTurn);
     setMessage("dealer Turn");
+    setHiddenDealerCard(false);
     if (playerScore <= 21) {
       if (playerScore < dealerScore) {
         setMessage(MESSAGE.dealerWin);
@@ -238,12 +251,13 @@ const BlackJack = () => {
         <>
           <div className={style.header}>BlackJack</div>
           <Hand
-            title={`Dealers Hand (${dealerScore})`}
+            title={gameState === GAMESTATE.done ? `Dealers Hand (${dealerScore})` : "Dealers Hand"}
             cards={dealerCards}
             player="dealer"
+            hidden={hiddenDealerCard}
           />
           <Hand
-            title={`Your Hand (${playerScore})`}
+            title={gameState === GAMESTATE.done ? `Your Hand (${playerScore})` : "Your Hand"}
             cards={playerCards}
             player="player"
           />
