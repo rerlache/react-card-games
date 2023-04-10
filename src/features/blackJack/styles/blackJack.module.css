@@ -4,6 +4,9 @@
 }
 #blackJack {
   background: rgb(0, 78, 0);
+  display: flex;
+  justify-content:center;
+  flex-direction: column;
   margin: 0;
   font-family: "Lexend Exa", sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -16,8 +19,15 @@
   align-items: center;
 }
 
+.playercontainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .handContainer {
   color: black;
+  width: 75%;
   display: grid;
   align-items: center;
   margin: 0.5em;
@@ -55,7 +65,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 4rem;
+  font-size: 3rem;
   margin: .25rem
 }
 .card::after,
@@ -76,10 +86,10 @@
 }
 
 .hiddenCard {
-  width: 110px;
-  height: 250px;
-  margin: 10px;
-  padding: 0.5em 1.5em;
+  position: relative;
+  margin: .25rem;
+  height: 7rem;
+  width: 4rem;
   background-image: linear-gradient(
     176deg,
     #ffffff 8.33%,
@@ -91,11 +101,42 @@
     #ff0000 100%
   );
   background-size: 60px 4.2px;
-  border: 5px solid white;
+  border: 3px solid white;
   border-radius: 15px;
   box-shadow: 0px 1px 10px rgb(0, 0, 0);
   cursor: default;
 }
 
+.btncontainer {
+  display: flex;
+  justify-content: center;
+}
 
+.playbtn {
+  margin: 10px;
+  border-radius: 50%;
+  background-color: darkgreen;
+  color: white;
+  width: 7rem;
+}
 
+.playbtn:hover {
+  box-shadow: 0px 1px 10px rgb(0, 0, 0);
+  text-shadow: 0px 1px 10px rgb(0, 0, 0);
+}
+
+.playbtn:disabled {
+  display: none;
+}
+
+.btn {
+  margin: 2rem;
+  justify-self: center;
+  font-size: 2rem;
+  padding: .5rem;
+  border-radius: .5rem;
+}
+.btn:hover {
+  color: white;
+  border:1px solid white;
+}

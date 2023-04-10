@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes, NavLink } from "react-router-dom";
 import BlackJack from "../features/blackJack/components/blackJack";
 import CardWar from "../features/cardWar/components/CardWar";
+import Home from "./Home";
 
 function Navigation() {
   return (
@@ -17,8 +18,9 @@ function Navigation() {
             BlackJack
           </NavLink>
         </div>
+        <hr />
         <Routes>
-          <Route exact path="/" />
+          <Route exact path="/" element={<Home />} />
           <Route exact path="/cardwar" element={<CardWar />} />
           <Route exact path="/blackjack" element={<BlackJack />} />
         </Routes>
