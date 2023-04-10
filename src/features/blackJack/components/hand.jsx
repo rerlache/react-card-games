@@ -20,9 +20,10 @@ const Hand = ({ title, cards, player }) => {
           return (
             <Card
               key={index}
+              index={index}
               value={card.value}
               suit={card.suit}
-              hidden={card.hidden}
+              player={player}
             />
           );
         })}

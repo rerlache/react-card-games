@@ -1,7 +1,7 @@
 import React from "react";
 import style from '../styles/blackJack.module.css'
 
-const Card = ({ value, suit, hidden }) => {
+const Card = ({ index, value, suit, player }) => {
   const getColor = () => {
     if (suit === "♠" || suit === "♣") {
       return "black";
@@ -9,9 +9,10 @@ const Card = ({ value, suit, hidden }) => {
       return "red";
     }
   };
+  const hideCard = player === "dealer" && index === 0
 
   const getCard = () => {
-    if (hidden) {
+    if (hideCard) {
       return <div className={style.hiddenCard} />;
     } else {
       return (

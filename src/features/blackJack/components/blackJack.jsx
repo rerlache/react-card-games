@@ -1,29 +1,28 @@
 import React, { useEffect, useState } from "react";
 import Deck from "../../../components/deck";
 import Hand from "./hand";
-import style from '../styles/blackJack.module.css'
+import style from "../styles/blackJack.module.css";
 
 const GAMESTATE = {
   bet: "bet",
   init: "init",
-  userTurn: "userTurn",
+  playerTurn: "playerTurn",
   dealerTurn: "dealerTurn",
 };
 const DEAL = {
-  user: "user",
+  player: "player",
   dealer: "dealer",
-  hidden: "hidden",
 };
 const MESSAGE = {
   bet: "Place a bet!",
   hitStand: "Hit or Stand?",
   bust: "Bust!",
-  userWin: "You Win!",
+  playerWin: "You Win!",
   dealerWin: "Dealer Wins!",
   tie: "Tie!",
 };
 const BlackJack = () => {
-  const data = new Deck();
+  let data = new Deck();
   data.shuffle();
   const [deck, setDeck] = useState(new Deck().shuffle());
   // player States
@@ -35,7 +34,7 @@ const BlackJack = () => {
   const [dealerScore, setDealerScore] = useState();
   const [dealerCount, setDealerCount] = useState(0);
   // game States
-  const [gameState, setGameState] = useState(GAMESTATE.init);
+  const [gameState, setGameState] = useState();
   const [message, setMessage] = useState(MESSAGE.bet);
   const [buttonState, setButtonState] = useState({
     hitDisabled: false,
@@ -45,11 +44,11 @@ const BlackJack = () => {
 
   useEffect(() => {
     if (gameState === GAMESTATE.init) {
-      drawCard(DEAL.user);
-      drawCard(DEAL.hidden);
-      drawCard(DEAL.user);
+      drawCard(DEAL.player);
       drawCard(DEAL.dealer);
-      setGameState(GAMESTATE.userTurn);
+      drawCard(DEAL.player);
+      drawCard(DEAL.dealer);
+      setGameState(GAMESTATE.playerTurn);
       setMessage(MESSAGE.hitStand);
     }
   }, [gameState]);
@@ -64,19 +63,20 @@ const BlackJack = () => {
     setDealerCount(dealerCount + 1);
   }, [dealerCards]);
 
-//  useEffect(() => {
-//    if (gameState === GAMESTATE.userTurn) {
-//      if (playerScore === 21) {
-//        buttonState.hitDisabled = true;
-//        setButtonState({ ...buttonState });
-//      } else if (playerScore > 20) {
-//        bust();
-//      }
-//    }
-//  }, [playerCount]);
+  useEffect(() => {
+    if (gameState === GAMESTATE.playerTurn) {
+      if (playerScore === 21) {
+        buttonState.hitDisabled = true;
+        setButtonState({ ...buttonState });
+      } else if (playerScore > 20) {
+        //bust();
+      }
+    }
+  }, [playerScore]);
 
   useEffect(() => {
     if (gameState === GAMESTATE.dealerTurn) {
+      console.log("dealerturn");
       if (dealerScore >= 17) {
         checkWin();
       } else {
@@ -84,6 +84,24 @@ const BlackJack = () => {
       }
     }
   }, [dealerCount]);
+
+  function startGame() {
+    setGameState(GAMESTATE.init);
+  }
+  function checkWin() {
+    if (playerScore > 21) {
+      setMessage(MESSAGE.dealerWin);
+    } else if (playerScore === 21) {
+      setMessage(MESSAGE.playerWin);
+    } else if (playerScore === dealerScore) {
+      setMessage(MESSAGE.tie);
+    }
+    setButtonState({
+      hitDisabled: true,
+      resetDisabled: false,
+      standDisabled: true,
+    });
+  }
 
   const resetGame = () => {
     console.clear();
@@ -97,7 +115,7 @@ const BlackJack = () => {
     setDealerScore(0);
     setDealerCount(0);
 
-    setGameState(GAMESTATE.bet);
+    setGameState(GAMESTATE.init);
     setMessage(MESSAGE.bet);
     setButtonState({
       hitDisabled: false,
@@ -108,9 +126,8 @@ const BlackJack = () => {
 
   const drawCard = (dealType) => {
     if (data.numberOfCards > 0) {
-      const randomIndex = Math.floor(Math.random() * data.numberOfCards);
-      const card = data.cards[randomIndex];
-      data.cards.splice(randomIndex, 1);
+      console.log(data.numberOfCards);
+      const card = data.pop();
       console.log("remaining cards: ", data.numberOfCards);
       dealCard(dealType, card);
     } else {
@@ -119,7 +136,7 @@ const BlackJack = () => {
   };
   const dealCard = (dealType, card) => {
     switch (dealType) {
-      case DEAL.user:
+      case DEAL.player:
         playerCards.push(card);
         setPlayerCards([...playerCards]);
         break;
@@ -157,31 +174,100 @@ const BlackJack = () => {
       return card.value === "A";
     });
     aces.forEach((card) => {
-      if (card.hidden === false) {
-        if (total + 11 > 21) {
+      if (total + 11 > 21) {
+        total += 1;
+      } else if (total + 11 === 21) {
+        if (aces.length > 1) {
           total += 1;
-        } else if (total + 11 === 21) {
-          if (aces.length > 1) {
-            total += 1;
-          } else {
-            total += 11;
-          }
         } else {
           total += 11;
         }
+      } else {
+        total += 11;
       }
     });
     setScore(total);
   };
+
+  function handleGetPlayerCard() {
+    drawCard(DEAL.player);
+    if (playerScore > 21) {
+      setMessage(MESSAGE.dealerWin);
+      setButtonState({
+        hitDisabled: true,
+        resetDisabled: false,
+        standDisabled: true,
+      });
+    } else if (playerScore === 21) {
+      setMessage(MESSAGE.playerWin);
+    } else if (playerScore === dealerScore) {
+      setMessage(MESSAGE.tie);
+    }
+  }
+  function handleStay() {
+    setGameState(GAMESTATE.dealerTurn);
+    setMessage("dealer Turn");
+    if (playerScore <= 21) {
+      if (playerScore < dealerScore) {
+        setMessage(MESSAGE.dealerWin);
+        setButtonState({
+          hitDisabled: true,
+          resetDisabled: false,
+          standDisabled: false,
+        });
+      } else {
+        drawCard(DEAL.dealer);
+        calculate(dealerCards, setDealerScore);
+      }
+    } else {
+      setMessage(MESSAGE.dealerWin);
+      setButtonState({
+        hitDisabled: true,
+        resetDisabled: false,
+        standDisabled: true,
+      });
+    }
+    console.log(dealerScore);
+  }
   // TODO: implement buttons
   return (
     <>
-      <div className={style.header}>BlackJack</div>
-      <Hand title={`Dealers Hand (${dealerScore})`} cards={dealerCards} player='dealer' />
-      <Hand title={`Your Hand (${playerScore})`} cards={playerCards} player='player' />
-      <button>Get Card</button>
-      <button>Stay</button>
-      <button>Again</button>
+      {gameState === undefined ? (
+        <button onClick={() => startGame()}>Start Game</button>
+      ) : (
+        <>
+          <div className={style.header}>BlackJack</div>
+          <Hand
+            title={`Dealers Hand (${dealerScore})`}
+            cards={dealerCards}
+            player="dealer"
+          />
+          <Hand
+            title={`Your Hand (${playerScore})`}
+            cards={playerCards}
+            player="player"
+          />
+          <div>{message}</div>
+          <button
+            onClick={() => handleGetPlayerCard()}
+            disabled={buttonState.hitDisabled}
+          >
+            Get Card
+          </button>
+          <button
+            onClick={() => handleStay()}
+            disabled={buttonState.standDisabled}
+          >
+            Stay
+          </button>
+          <button
+            onClick={() => resetGame()}
+            disabled={buttonState.resetDisabled}
+          >
+            Again
+          </button>
+        </>
+      )}
     </>
   );
 };
